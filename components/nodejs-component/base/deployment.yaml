@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/created-by: application-service
+    app.kubernetes.io/instance: nodejs-component
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: nodejs-component
+    app.kubernetes.io/part-of: e2e-nodejs
+  name: nodejs-component
+  namespace: e2e-tests
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: nodejs-component
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: nodejs-component
+    spec:
+      containers:
+      - image: quay.io/redhat-appstudio-qe/test-images:2876ae3d41f548ff91443398025e2766
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        name: container-image
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+        resources: {}
+status: {}
